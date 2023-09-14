@@ -5,65 +5,64 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
+#include <vector>
 
 #include "include/Crypt.h"
 
 char checker(char c, bool isEncrypt, int shift) {
-    if (std::isalpha(c)) {
-        char cryptedChar = c;
-        if (isEncrypt)
-            cryptedChar += shift;
-        else
-            cryptedChar -= shift;
-        switch (std::islower(c)) {
-            case true: {
-                if (cryptedChar > 'z')
-                    cryptedChar -= 26;
-                else if (cryptedChar < 'a')
-                    cryptedChar += 26;
-            }
-            case false: {
-                if (cryptedChar > 'Z')
-                    cryptedChar -= 26;
-                else if (cryptedChar < 'A')
-                    cryptedChar += 26;
-            }
+    char cryptedChar;
+    if (isEncrypt)
+        cryptedChar = static_cast<char>(c - shift);
+    else
+        cryptedChar = static_cast<char>(c + shift);
+    switch (std::islower(c)) {
+        case true: {
+            if (cryptedChar > 'z')
+                cryptedChar = static_cast<char>(cryptedChar - 26);
+            else if (cryptedChar < 'a')
+                cryptedChar = static_cast<char>(cryptedChar + 26);
+            break;
         }
-        return cryptedChar;
-    } else {
-        return c;
+        case false: {
+            if (cryptedChar > 'Z')
+                cryptedChar = static_cast<char>(cryptedChar - 26);
+            else if (cryptedChar < 'A')
+                cryptedChar = static_cast<char>(cryptedChar + 26);
+            break;
+        }
     }
+    return cryptedChar;
 }
 
-std::string encrypt(const std::string &text, std::string &shifts) {
-    std::string encryptedText = "";
-    shifts = "";
-    std::srand(std::time(0));
+std::string encrypt(const std::string &text, std::vector<int> &shifts) {
+    std::string encryptedText;
+    shifts.clear();
+    std::srand(std::time(nullptr));
     for (char c : text) {
         if (std::isalpha(c)) {
-            int shift = std::rand() % 51 - 25;
+            int shift = rand() % 51 - 25;
             encryptedText += checker(c, true, shift);
-            shifts += std::to_string(shift) + ",";
+            shifts.push_back(shift);
         } else {
             encryptedText += c;
-            shifts += "0,";
+            shifts.push_back(0);
         }
     }
     return encryptedText;
 }
 
-std::string decrypt(const std::string &encryptedText, std::string &shifts) {
-    std::string decryptedText = "";
-    std::string shiftData = shifts;
+std::string decrypt(const std::string &encryptedText, std::vector<int> &shifts) {
+    std::string decryptedText;
     size_t shiftIndex = 0;
 
     for (char c : encryptedText) {
         if (std::isalpha(c)) {
-            int shift = (int)std::stoi(shiftData.substr(shiftIndex, shiftData.find_first_of(",", shiftIndex) - shiftIndex));
+            int shift = shifts[shiftIndex];
             decryptedText += checker(c, false, shift);
-            shiftIndex = shiftData.find_first_of(',', shiftIndex) + 1;
+            shiftIndex++;
         } else {
             decryptedText += c;
+            shiftIndex++;
         }
     }
     return decryptedText;
