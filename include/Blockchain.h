@@ -20,6 +20,7 @@ public:
     Block *getLatestBlock();
     bool isChainValid();
     void addBlock(TransactionData data);
+    std::string getName(int index);
     void printChain();
 };
 
