@@ -54,6 +54,17 @@ bool Blockchain::isChainValid() {
     return true;
 }
 
+std::string Blockchain::getName(int index) {
+    std::vector<Block>::iterator it;
+    for (it = chain.begin(); it != chain.end(); ++it) {
+        Block currentBlock = *it;
+        if(currentBlock.getIndex() == index) {
+            return currentBlock.data.senderKey.c_str();
+        }
+    }
+    return "None";
+}
+
 void Blockchain::printChain() {
     std::vector<Block>::iterator it;
 
@@ -68,6 +79,7 @@ void Blockchain::printChain() {
         printf("\nHash: %zu", currentBlock.getHash());
         printf("\nPrevious Hash: %zu", currentBlock.getPreviousHash());
         printf("\nIs Block Valid?: %d", currentBlock.isHashValid());
+        printf("\n\n");
 
     }
 }
