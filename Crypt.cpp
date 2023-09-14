@@ -15,22 +15,22 @@ char checker(char c, bool isEncrypt, int shift) {
         cryptedChar = static_cast<char>(c - shift);
     else
         cryptedChar = static_cast<char>(c + shift);
-    switch (std::islower(c)) {
-        case true: {
-            if (cryptedChar > 'z')
-                cryptedChar = static_cast<char>(cryptedChar - 26);
-            else if (cryptedChar < 'a')
-                cryptedChar = static_cast<char>(cryptedChar + 26);
-            break;
-        }
-        case false: {
-            if (cryptedChar > 'Z')
-                cryptedChar = static_cast<char>(cryptedChar - 26);
-            else if (cryptedChar < 'A')
-                cryptedChar = static_cast<char>(cryptedChar + 26);
-            break;
-        }
-    }
+//    switch (std::islower(c)) {
+//        case true: {
+//            if (cryptedChar > 'z')
+//                cryptedChar = static_cast<char>(cryptedChar - 26);
+//            else if (cryptedChar < 'a')
+//                cryptedChar = static_cast<char>(cryptedChar + 26);
+//            break;
+//        }
+//        case false: {
+//            if (cryptedChar > 'Z')
+//                cryptedChar = static_cast<char>(cryptedChar - 26);
+//            else if (cryptedChar < 'A')
+//                cryptedChar = static_cast<char>(cryptedChar + 26);
+//            break;
+//        }
+//    }
     return cryptedChar;
 }
 
@@ -39,14 +39,9 @@ std::string encrypt(const std::string &text, std::vector<int> &shifts) {
     shifts.clear();
     std::srand(std::time(nullptr));
     for (char c : text) {
-        if (std::isalpha(c)) {
-            int shift = rand() % 51 - 25;
-            encryptedText += checker(c, true, shift);
-            shifts.push_back(shift);
-        } else {
-            encryptedText += c;
-            shifts.push_back(0);
-        }
+        int shift = rand() % 51 - 25;
+        encryptedText += checker(c, true, shift);
+        shifts.push_back(shift);
     }
     return encryptedText;
 }
@@ -56,14 +51,9 @@ std::string decrypt(const std::string &encryptedText, std::vector<int> &shifts) 
     size_t shiftIndex = 0;
 
     for (char c : encryptedText) {
-        if (std::isalpha(c)) {
-            int shift = shifts[shiftIndex];
-            decryptedText += checker(c, false, shift);
-            shiftIndex++;
-        } else {
-            decryptedText += c;
-            shiftIndex++;
-        }
+        int shift = shifts[shiftIndex];
+        decryptedText += checker(c, false, shift);
+        shiftIndex++;
     }
     return decryptedText;
 }
